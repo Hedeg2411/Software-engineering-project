@@ -60,10 +60,15 @@ package "View Layer (PySide6 GUI)" {
 }
 
 ' ==========================================
-' 2. CONTROLLER LAYER
+' 2. CONTROLLER LAYER (Domain-Specific)
 ' ==========================================
 package "Controller Layer" {
-    component "**UI Event & Async Controller**\n(Handles PySide6 Signals & QThreads)\n---\n[NFR-01, NFR-03]" as Ctrl
+    component "**AuthController**\n(Handles Login & Auth Signals)\n---\n[NFR-01]" as AuthCtrl
+    component "**MailController**\n(Handles Mail & Sync Events)\n---\n[NFR-01, NFR-03]" as MailCtrl
+    component "**CalendarController**\n(Handles Calendar Events)\n---\n[NFR-01]" as CalCtrl
+
+    AuthCtrl -[hidden]right-> MailCtrl
+    MailCtrl -[hidden]right-> CalCtrl
 }
 
 ' ==========================================
@@ -100,20 +105,20 @@ package "External Services & Protocols" {
 ' DEPENDENCIES (Pile)
 ' ==========================================
 
-' View -> Controller (Ingen direkte kontakt til Model længere)
-LoginUI --> Ctrl
-SettingsUI --> Ctrl
-MainUI --> Ctrl
-ViewerUI --> Ctrl
-ComposerUI --> Ctrl
-CalendarUI --> Ctrl
+' View -> Controller Mappings
+LoginUI --> AuthCtrl
+SettingsUI --> MailCtrl
+MainUI --> MailCtrl
+ViewerUI --> MailCtrl
+ComposerUI --> MailCtrl
+CalendarUI --> CalCtrl
 
-' Controller -> Model (Delegerer opgaver)
-Ctrl --> AuthMgr 
-Ctrl --> InboundSvc 
-Ctrl --> OutboundSvc 
-Ctrl --> CalendarSvc 
-Ctrl --> DataCtrl 
+' Controller -> Model Mappings
+AuthCtrl --> AuthMgr 
+MailCtrl --> InboundSvc 
+MailCtrl --> OutboundSvc 
+MailCtrl --> DataCtrl
+CalCtrl --> CalendarSvc 
 
 ' Internt i Model Layer
 InboundSvc --> AuthMgr
