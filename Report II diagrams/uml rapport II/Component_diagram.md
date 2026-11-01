@@ -40,9 +40,7 @@ skinparam cloud {
 
 top to bottom direction
 
-' ==========================================
-' 1. VIEW LAYER (PySide6 GUI)
-' ==========================================
+'view layer
 package "View Layer (PySide6 GUI)" {
     component "**Login UI**\n---\n[FR-01, FR-04, OPT-01]" as LoginUI
     component "**Settings UI**\n---\n[FR-09, OPT-01, OPT-03]" as SettingsUI
@@ -59,9 +57,7 @@ package "View Layer (PySide6 GUI)" {
     ComposerUI -[hidden]right-> CalendarUI
 }
 
-' ==========================================
-' 2. CONTROLLER LAYER (Domain-Specific)
-' ==========================================
+'controller layer
 package "Controller Layer" {
     component "**AuthController**\n(Handles Login & Auth Signals)\n---\n[NFR-01]" as AuthCtrl
     component "**MailController**\n(Handles Mail & Sync Events)\n---\n[NFR-01, NFR-03]" as MailCtrl
@@ -71,9 +67,7 @@ package "Controller Layer" {
     MailCtrl -[hidden]right-> CalCtrl
 }
 
-' ==========================================
-' 3. MODEL LAYER (Business Logic & Networking)
-' ==========================================
+'model layer
 package "Model Layer (Python Core)" {
     component "**Auth & Session Manager**\n---\n[FR-01, FR-02, FR-03, FR-04, OPT-01]" as AuthMgr
     
@@ -88,9 +82,7 @@ package "Model Layer (Python Core)" {
     component "**Local Data & Storage Controller**\n---\n[FR-06, FR-08..13, OPT-01..03]" as DataCtrl
 }
 
-' ==========================================
-' 4. PERSISTENCE & EXTERNAL SERVICES
-' ==========================================
+'persistence and external services
 package "Local Persistence Layer" {
     folder "**Local File & Token Store**\n(os / pathlib / credentials.json)\n---\n[FR-02, FR-03, FR-08, OPT-01, OPT-02]" as FileStore
     database "**SQLite Database**\n(Emails, Flags, Signatures, Blacklist)\n---\n[FR-09..13, OPT-01..03]" as SQLiteDB
@@ -101,10 +93,7 @@ package "External Services & Protocols" {
     cloud "**External Mail Servers**\n(IMAP / SMTP)" as MailServer
 }
 
-' ==========================================
-' DEPENDENCIES (Pile)
-' ==========================================
-
+'dependencies
 ' View -> Controller Mappings
 LoginUI --> AuthCtrl
 SettingsUI --> MailCtrl
@@ -112,6 +101,7 @@ MainUI --> MailCtrl
 ViewerUI --> MailCtrl
 ComposerUI --> MailCtrl
 CalendarUI --> CalCtrl
+SettingsUI --> AuthCtrl
 
 ' Controller -> Model Mappings
 AuthCtrl --> AuthMgr 
